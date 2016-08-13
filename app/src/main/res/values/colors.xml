@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Old yellow colors
+    <color name="colorPrimary">#c5a34f</color>
+    <color name="colorPrimaryDark">#af9146</color>
+    <color name="colorAccent">#e2c479</color>
+    -->
+    <color name="colorPrimary">#976133</color>
+    <color name="colorPrimaryDark">#7d4f2f</color>
+    <!-- Tan accent
+    <color name="colorAccent">#b69e71</color>
+    -->
+    <color name="colorAccent">#003300</color>
+    <color name="colorTitleText">#ffffff</color>
+</resources>

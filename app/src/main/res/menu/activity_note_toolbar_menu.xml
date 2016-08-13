@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_note_delete"
+        android:icon="@drawable/ic_action_delete_dark"
+        android:title="@string/toolbar_text_delete"
+        app:showAsAction="ifRoom"/>
+
+    <item
+        android:id="@+id/action_note_debug_open_on_pebble"
+        android:title="Debug - View on Pebble"
+        app:showAsAction="never"/>
+</menu>
