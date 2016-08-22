@@ -36,6 +36,12 @@ public class PebbleComService extends Service {
     static final int MSG_PHONE_GENERIC_ERROR = 17;
     static final int MSG_PEBBLE_NEW_NOTE = 18;
     static final int MSG_PEBBLE_SET_EDIT_ID = 19;
+    static final int MSG_PEBBLE_REQUEST_VERSION = 20;
+    static final int MSG_PEBBLE_SEND_VERSION_MAJOR = 21;
+    static final int MSG_PEBBLE_SEND_VERSION_MINOR = 22;
+    static final int MSG_PHONE_REQUEST_VERSION = 23;
+    static final int MSG_PHONE_SEND_VERSION_MAJOR = 24;
+    static final int MSG_PHONE_SEND_VERSION_MINOR = 25;
 
     PebbleKit.PebbleDataReceiver dataReciever;
     static long m_currentPebbleEditID = 0;

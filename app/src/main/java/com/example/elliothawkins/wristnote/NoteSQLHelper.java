@@ -5,10 +5,20 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.os.Environment;
 import android.text.format.DateUtils;
 import android.util.Log;
 import android.widget.Toast;
 
+import org.xmlpull.v1.XmlSerializer;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -205,5 +215,18 @@ public class NoteSQLHelper extends SQLiteOpenHelper{
         dbWrite.delete(TABLE_NAME, selection, selectionArgs);
 
         dbWrite.close();
+    }
+
+    boolean backupDB(String path){
+        //TODO - back up database at given path
+        boolean bSuccess = false;
+
+        return bSuccess;
+    }
+
+    boolean restoreDB(String path){
+        //TODO - restore database at given path
+        boolean bSuccess = false;
+        return bSuccess;
     }
 }
