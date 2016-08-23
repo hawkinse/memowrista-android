@@ -144,4 +144,12 @@ public class NoteListFragment extends Fragment {
             m_tvMain.setVisibility(View.VISIBLE);
         }
     }
+
+    public NoteStruct getNoteAtIndex(int index){
+        if(m_lvNotes.getAdapter() != null){
+           return (NoteStruct) m_lvNotes.getAdapter().getItem(index);
+        }
+
+        return null;
+    }
 }

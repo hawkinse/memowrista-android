@@ -65,14 +65,6 @@ public class NoteListAdapter extends BaseAdapter {
             @Override
             public void onClick(View v){
                 m_clickedListener.OnNoteClicked(mNotes[position], rowView, position);
-                /*
-                //Toast.makeText(mContext, "Selected note ID: " + mNotes[position].ID, Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(mContext, NoteActivity.class);
-                intent.putExtra("ID", mNotes[position].ID);
-                intent.putExtra("Title", mNotes[position].title);
-                intent.putExtra("Body", mNotes[position].body);
-                mContext.startActivity(intent);
-                */
             }
         });
 

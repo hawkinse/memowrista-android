@@ -56,6 +56,13 @@ public class MainActivity extends AppCompatActivity implements INoteClickListene
         m_nlf = (NoteListFragment) getSupportFragmentManager().findFragmentById(R.id.list_frag);
         m_ncf = (NoteContentFragment) getSupportFragmentManager().findFragmentById(R.id.content_frag);
 
+        if(usingTabletLayout()){
+            //Auto-load the first entry if present
+            NoteStruct firstNote = m_nlf.getNoteAtIndex(0);
+            if(firstNote != null){
+                m_ncf.setNote(firstNote);
+            }
+        }
         //makeDummyNoteList();
         //loadNoteList();
 
@@ -132,7 +139,8 @@ public class MainActivity extends AppCompatActivity implements INoteClickListene
     }
 
     private boolean usingTabletLayout(){
-        boolean bIsTablet =  (getSupportFragmentManager().findFragmentById(R.id.content_frag) != null);
+        //Need to explicitly check for a missing view. Checking for the fragment containing the view will fail with rotation!
+        boolean bIsTablet = (findViewById(R.id.note_edit_text_title) != null);
 
         //Update reference to m_ncf
         if(bIsTablet) {
