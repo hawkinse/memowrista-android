@@ -7,8 +7,10 @@
         android:title="@string/toolbar_text_delete"
         app:showAsAction="ifRoom"/>
 
+    <!--
     <item
         android:id="@+id/action_note_debug_open_on_pebble"
         android:title="Debug - View on Pebble"
         app:showAsAction="never"/>
+    -->
 </menu>

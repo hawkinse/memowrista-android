@@ -24,13 +24,14 @@ import java.util.TimerTask;
 
 public class NoteActivity extends AppCompatActivity {
 
+    private NoteContentFragment m_ncf;
+
     private EditText m_etTitle;
     private EditText m_etBody;
 
     private long mID = -1;
     private String mTitle = "";
     private String mBody = "";
-    private boolean mDeleted = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +46,7 @@ public class NoteActivity extends AppCompatActivity {
 
         m_etTitle = (EditText) findViewById(R.id.note_edit_text_title);
         m_etBody = (EditText) findViewById(R.id.note_edit_text_body);
+        m_ncf = (NoteContentFragment) getSupportFragmentManager().findFragmentById(R.id.content_frag);
 
         //Hides the action bar during copy/paste if running below Android 6
         //Otherwise it gets pushed down, looks ugly
@@ -106,11 +108,11 @@ public class NoteActivity extends AppCompatActivity {
         //Check if ID is valid
         mID = getIntent().getLongExtra("ID", -1);
         if(mID >= 0){
-            //ID is valid. Load title and body
-            mTitle = getIntent().getStringExtra("Title");
-            mBody = getIntent().getStringExtra("Body");
-            m_etTitle.setText(mTitle);
-            m_etBody.setText(mBody);
+            NoteStruct viewedNote = new NoteStruct();
+            viewedNote.ID = mID;
+            viewedNote.title = mTitle;
+            viewedNote.body = mBody;
+            m_ncf.setNote(viewedNote);
         }
 
         PebbleComService.setActiveNoteActivity(this);
@@ -128,20 +130,17 @@ public class NoteActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.action_note_delete:
                 //Toast.makeText(this, "Deleting note!", Toast.LENGTH_SHORT).show();
-                deleteNote();
+                m_ncf.deleteNote();
                 finish();
                 return true;
 
             //Handle back button, since it for some reason is not handled by parent in default case
             case android.R.id.home:
                 //Toast.makeText(this, "Returning to main activity (or whatever is UP)...", Toast.LENGTH_SHORT).show();
-                writeNote();
+                m_ncf.writeNote();
                 finish();
                 return true;
 
-            case R.id.action_note_debug_open_on_pebble:
-                debug_SendToPebble();
-                return true;
             default:
                 // If we got here, the user's action was not recognized.
                 // Invoke the superclass to handle it.
@@ -151,11 +150,6 @@ public class NoteActivity extends AppCompatActivity {
 
     @Override
     public void onPause(){
-        //If this note hasn't been deleted, ensure it gets saved!
-        if(!mDeleted) {
-            //Toast.makeText(this, "Note activity paused. Saving note!", Toast.LENGTH_LONG).show();
-            writeNote();
-        }
         PebbleComService.setActiveNoteActivity(null);
         super.onPause();
     }
@@ -164,75 +158,10 @@ public class NoteActivity extends AppCompatActivity {
     public void onResume(){
         super.onResume();
         PebbleComService.setActiveNoteActivity(this);
-        updateNoteContent();
-    }
-
-    private void writeNote(){
-        if(mID > 0 && m_etTitle.getText().toString().equals(mTitle) && m_etBody.getText().toString().equals(mBody)){
-            //Toast.makeText(this, "Note is unchanged! Not updating or inserting.", Toast.LENGTH_SHORT).show();
-        } else {
-            NoteSQLHelper sqlHelper = new NoteSQLHelper(this);
-            NoteStruct newNote = new NoteStruct();
-            newNote.ID = mID;
-            newNote.title = m_etTitle.getText().toString();
-            newNote.body = m_etBody.getText().toString();
-
-            if(newNote.title.isEmpty()){
-                newNote.title = getString(R.string.default_note_title);
-            }
-            //Toast.makeText(this, "Writing note!", Toast.LENGTH_SHORT).show();
-            mID = sqlHelper.writeNote(newNote);
-            sqlHelper.close();
-
-            //Send update to pebble app
-            PebbleComService.sendPebbleUpdate();
-        }
-    }
-
-    private void deleteNote(){
-        if(mID > 0) {
-            NoteSQLHelper sqlHelper = new NoteSQLHelper(this);
-            sqlHelper.deleteNote(mID);
-            sqlHelper.close();
-        }
-        mDeleted = true;
-
-        //Send update to pebble app
-        PebbleComService.sendPebbleUpdate();
-    }
-
-    private void debug_SendToPebble(){
-        final Intent i = new Intent("com.getpebble.action.SEND_NOTIFICATION");
-        final Map data = new HashMap();
-        data.put("title", m_etTitle.getText().toString());
-        data.put("body", m_etBody.getText().toString());
-        final JSONObject jsonData = new JSONObject(data);
-        final String notificationData = new JSONArray().put(jsonData).toString();
-
-        i.putExtra("messageType", "PEBBLE_ALERT");
-        i.putExtra("sender", "PebbleKit Android");
-        i.putExtra("notificationData", notificationData);
-        sendBroadcast(i);
     }
 
     public void updateNoteContent(long updateID){
-        if(updateID == mID){
-            updateNoteContent();
-        }
-    }
-    private void updateNoteContent(){
-        if(mID > 0) {
-            NoteSQLHelper sqlHelper = new NoteSQLHelper(this);
-            NoteStruct note = sqlHelper.getNote(mID);
-
-            if (note != null && note.ID > -1) {
-                if ((!m_etTitle.getText().equals(note.title)) || (!m_etBody.getText().equals(note.body))) {
-                    m_etTitle.setText(note.title);
-                    m_etBody.setText(note.body);
-                }
-            }
-
-            sqlHelper.close();
-        }
+        //For now, pass through to fragment
+        m_ncf.updateNoteContent(updateID);
     }
 }

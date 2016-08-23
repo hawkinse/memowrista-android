@@ -20,13 +20,15 @@ public class NoteListAdapter extends BaseAdapter {
     private Context mContext;
     private LayoutInflater mInflater;
 
-    //TODO - replace with struct?
+    private INoteClickListener m_clickedListener;
     private NoteStruct[] mNotes;
 
-    public NoteListAdapter(Activity parentActivity, NoteStruct[] notes){
+
+    public NoteListAdapter(Activity parentActivity, NoteStruct[] notes, INoteClickListener listener){
         mNotes = notes;
         mContext = parentActivity;
         mInflater = (LayoutInflater)mContext.getSystemService(mContext.LAYOUT_INFLATER_SERVICE);
+        m_clickedListener = listener;
     }
 
     @Override
@@ -46,7 +48,7 @@ public class NoteListAdapter extends BaseAdapter {
     }
 
     public View getView(final int position, View contentView, ViewGroup parent){
-        View rowView = mInflater.inflate(R.layout.listitem_note, null);
+        final View rowView = mInflater.inflate(R.layout.listitem_note, null);
         TextView tvNoteTitle = (TextView)rowView.findViewById(R.id.note_listitem_name);
         TextView tvNoteTimestamp = (TextView)rowView.findViewById(R.id.note_listitem_timestamp);
 
@@ -62,12 +64,15 @@ public class NoteListAdapter extends BaseAdapter {
         rowView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v){
+                m_clickedListener.OnNoteClicked(mNotes[position], rowView, position);
+                /*
                 //Toast.makeText(mContext, "Selected note ID: " + mNotes[position].ID, Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(mContext, NoteActivity.class);
                 intent.putExtra("ID", mNotes[position].ID);
                 intent.putExtra("Title", mNotes[position].title);
                 intent.putExtra("Body", mNotes[position].body);
                 mContext.startActivity(intent);
+                */
             }
         });
 

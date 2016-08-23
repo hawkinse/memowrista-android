@@ -5,7 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context="com.example.elliothawkins.wristnote.MainActivity">
+    tools:context="com.example.elliothawkins.wristnote.MainActivity"
+    android:clipToPadding="false"
+    android:clipChildren="false">
 
     <android.support.v7.widget.Toolbar android:id="@+id/main_toolbar"
         android:layout_width="match_parent"
@@ -23,7 +25,10 @@
         android:paddingTop="@dimen/activity_vertical_margin"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/main_toolbar">
+        android:layout_below="@id/main_toolbar"
+        android:clipToPadding="false"
+        android:clipChildren="false"
+        android:outlineProvider="bounds">
 
         <!--
         <TextView
@@ -39,8 +44,20 @@
         -->
         <fragment class="com.example.elliothawkins.wristnote.NoteListFragment"
             android:id="@+id/list_frag"
+            android:layout_width="300dp"
+            android:layout_height="match_parent"
+            tools:layout="@layout/fragment_note_list"
+            android:outlineProvider="bounds"/>
+
+        <fragment class="com.example.elliothawkins.wristnote.NoteContentFragment"
+            android:id="@+id/content_frag"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:layout="@layout/fragment_note_list" />
+            tools:layout="@layout/fragment_note_content"
+            android:elevation="20dp"
+            android:translationZ="20dp"
+            android:outlineProvider="bounds"
+            android:layout_toRightOf="@id/list_frag"/>
+
     </RelativeLayout>
 </RelativeLayout>

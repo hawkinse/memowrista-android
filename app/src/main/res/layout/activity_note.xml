@@ -28,6 +28,7 @@
         android:layout_below="@id/note_toolbar">
 
         <!--Pebble local storage API can only handle 256 byte arrays, so if we want to cache note titles we also need to be 255 chars + null terminator-->
+        <!--
         <EditText
             android:id="@+id/note_edit_text_title"
             android:layout_width="match_parent"
@@ -45,5 +46,11 @@
             android:isScrollContainer="true"
 
             />
+            -->
+        <fragment class="com.example.elliothawkins.wristnote.NoteContentFragment"
+            android:id="@+id/content_frag"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:layout="@layout/fragment_note_content" />
     </RelativeLayout>
 </RelativeLayout>

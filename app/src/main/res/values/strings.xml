@@ -14,8 +14,11 @@
     <string name="about_title">About WristNote</string>
     <string name="about_body">
         WristNote by Elliot Hawkins\n\nThis application is released under an (open TBD) license. Details and source code for Android app:\n\n
-        <a href="https:\\www.bitbucket.org\hawkinse">https:\\\\bitbucket.org\\hawkinse\\WristNote-Android</a>
+        <a href="https:\\www.bitbucket.org\hawkinse">https://bitbucket.org/hawkinse/WristNote-Android</a>
         \n\nPebble companion app:\n\n
-        <a href="https:\\www.bitbucket.org\hawkinse">https:\\\\bitbucket.org\\hawkinse\\WristNote-Pebble</a>
+        <a href="https:\\www.bitbucket.org\hawkinse">https://bitbucket.org/hawkinse/WristNote-Pebble</a>
     </string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
