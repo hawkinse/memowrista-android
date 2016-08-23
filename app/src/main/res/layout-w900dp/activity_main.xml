@@ -7,9 +7,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.example.elliothawkins.wristnote.MainActivity"
     android:clipToPadding="false"
-    android:clipChildren="false">
+    android:clipChildren="false"
+    android:outlineProvider="bounds">
 
-    <android.support.v7.widget.Toolbar android:id="@+id/main_toolbar"
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/main_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:elevation="4dp"
@@ -18,46 +20,44 @@
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         />
 
-    <RelativeLayout
-        android:paddingBottom="@dimen/activity_vertical_margin"
+    <LinearLayout
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingTop="@dimen/activity_vertical_margin"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/main_toolbar"
         android:clipToPadding="false"
         android:clipChildren="false"
-        android:outlineProvider="bounds">
+        android:outlineProvider="bounds"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_gravity="center">
 
-        <!--
-        <TextView
-            android:id="@+id/main_textview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/main_loading" />
-
-        <ListView
-            android:id="@+id/main_lvNotes"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"></ListView>
-        -->
         <fragment class="com.example.elliothawkins.wristnote.NoteListFragment"
             android:id="@+id/list_frag"
             android:layout_width="300dp"
             android:layout_height="match_parent"
+            android:paddingRight="@dimen/activity_horizontal_margin"
             tools:layout="@layout/fragment_note_list"
             android:outlineProvider="bounds"/>
+
+
+        <!-- Until you can figure out a way to incorporate elevation into the fragment, add a divider -->
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@color/colorDividerShadow"
+            android:elevation="4dp"
+            />
 
         <fragment class="com.example.elliothawkins.wristnote.NoteContentFragment"
             android:id="@+id/content_frag"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
             tools:layout="@layout/fragment_note_content"
-            android:elevation="20dp"
-            android:translationZ="20dp"
-            android:outlineProvider="bounds"
-            android:layout_toRightOf="@id/list_frag"/>
+            android:background="@color/colorDividerShadow"
+        />
 
-    </RelativeLayout>
+    </LinearLayout>
 </RelativeLayout>
