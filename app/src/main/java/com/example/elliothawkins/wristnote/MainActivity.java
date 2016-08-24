@@ -33,7 +33,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.UUID;
 
-public class MainActivity extends AppCompatActivity implements INoteClickListener {
+public class MainActivity extends AppCompatActivity implements INoteClickListener, INotesChangedListener {
     static final String PEBBLE_BINARY_PATH = "WristNote.pbw";
 
     NoteListFragment m_nlf;
@@ -71,6 +71,8 @@ public class MainActivity extends AppCompatActivity implements INoteClickListene
         startService(pebbleComServiceIntent);
 
         PebbleComService.setActiveMainActivity(this);
+
+        NoteSQLHelper.registerNotesChangedListener(this);
     }
 
     @Override
@@ -112,11 +114,13 @@ public class MainActivity extends AppCompatActivity implements INoteClickListene
     public void onResume(){
         super.onResume();
         PebbleComService.setActiveMainActivity(this);
+        NoteSQLHelper.registerNotesChangedListener(this);
     }
 
     @Override
     public void onPause(){
         PebbleComService.setActiveMainActivity(null);
+        NoteSQLHelper.unregisterNotesChangedListener(this);
         super.onPause();
     }
 
@@ -135,7 +139,10 @@ public class MainActivity extends AppCompatActivity implements INoteClickListene
             noteIntent.putExtra("Body", note.body);
             startActivity(noteIntent);
         }
+    }
 
+    public void onNotesChanged(){
+        m_nlf.loadNoteList();
     }
 
     private boolean usingTabletLayout(){

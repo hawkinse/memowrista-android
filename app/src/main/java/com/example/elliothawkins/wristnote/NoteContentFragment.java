@@ -39,6 +39,21 @@ public class NoteContentFragment extends Fragment {
         m_etTitle = (EditText) fragmentView.findViewById(R.id.note_edit_text_title);
         m_etBody = (EditText) fragmentView.findViewById(R.id.note_edit_text_body);
 
+        //Update note list when focus is changed on either text box. This will allow side panel to more quickly show title/position updates in tablet UI
+        m_etTitle.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                writeNote();
+            }
+        });
+
+        m_etBody.setOnFocusChangeListener(new View.OnFocusChangeListener(){
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                writeNote();
+            }
+        });
+
         return fragmentView;
     }
 

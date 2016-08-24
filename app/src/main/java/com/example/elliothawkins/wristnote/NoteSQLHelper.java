@@ -48,6 +48,8 @@ public class NoteSQLHelper extends SQLiteOpenHelper{
     private static final String SQL_DROP_TABLE =
             "DROP TABLE IF EXISTS " + TABLE_NAME;
 
+    private static ArrayList<INotesChangedListener> m_changedListeners = new ArrayList<INotesChangedListener>();
+
     public NoteSQLHelper(Context context){
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -72,6 +74,8 @@ public class NoteSQLHelper extends SQLiteOpenHelper{
         } else {
             toReturn = writeNewNote(note);
         }
+
+        updateNotesChangedListeners();
 
         return toReturn;
     }
@@ -215,6 +219,8 @@ public class NoteSQLHelper extends SQLiteOpenHelper{
         dbWrite.delete(TABLE_NAME, selection, selectionArgs);
 
         dbWrite.close();
+
+        updateNotesChangedListeners();
     }
 
     boolean backupDB(String path){
@@ -227,6 +233,23 @@ public class NoteSQLHelper extends SQLiteOpenHelper{
     boolean restoreDB(String path){
         //TODO - restore database at given path
         boolean bSuccess = false;
+
+        updateNotesChangedListeners();
+
         return bSuccess;
+    }
+
+    public static void registerNotesChangedListener(INotesChangedListener listener){
+        m_changedListeners.add(listener);
+    }
+
+    public static void unregisterNotesChangedListener(INotesChangedListener listener){
+        m_changedListeners.remove(listener);
+    }
+
+    private void updateNotesChangedListeners(){
+        for(INotesChangedListener listener : m_changedListeners){
+            listener.onNotesChanged();
+        }
     }
 }
