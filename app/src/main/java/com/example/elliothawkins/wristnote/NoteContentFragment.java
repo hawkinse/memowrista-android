@@ -126,7 +126,7 @@ public class NoteContentFragment extends Fragment {
         if(mID > 0 && m_etTitle.getText().toString().equals(mTitle) && m_etBody.getText().toString().equals(mBody)){
             Toast.makeText(getContext(), "Note is unchanged! Not updating or inserting.", Toast.LENGTH_SHORT).show();
         } else {
-            NoteSQLHelper sqlHelper = new NoteSQLHelper(getContext());
+            NoteSQLHelper sqlHelper = new NoteSQLHelper(getActivity());
             NoteStruct newNote = new NoteStruct();
             newNote.ID = mID;
             newNote.title = m_etTitle.getText().toString();
@@ -147,7 +147,7 @@ public class NoteContentFragment extends Fragment {
     //Was private before moving to fragment
     public void deleteNote(){
         if(mID > 0) {
-            NoteSQLHelper sqlHelper = new NoteSQLHelper(getContext());
+            NoteSQLHelper sqlHelper = new NoteSQLHelper(getActivity());
             sqlHelper.deleteNote(mID);
             sqlHelper.close();
         }
@@ -166,7 +166,7 @@ public class NoteContentFragment extends Fragment {
     //Was private before moving to fragment
     public void updateNoteContent(){
         if(mID > 0) {
-            NoteSQLHelper sqlHelper = new NoteSQLHelper(getContext());
+            NoteSQLHelper sqlHelper = new NoteSQLHelper(getActivity());
             NoteStruct note = sqlHelper.getNote(mID);
 
             if (note != null && note.ID > -1) {

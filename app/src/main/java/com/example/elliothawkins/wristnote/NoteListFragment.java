@@ -94,7 +94,7 @@ public class NoteListFragment extends Fragment {
     }
 
     public void loadNoteList(){
-        NoteSQLHelper sqlHelper = new NoteSQLHelper(getContext());
+        NoteSQLHelper sqlHelper = new NoteSQLHelper(getActivity());
         m_nsNotes = sqlHelper.getNotes();
         sqlHelper.close();
 

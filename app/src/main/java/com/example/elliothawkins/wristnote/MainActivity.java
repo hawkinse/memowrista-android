@@ -128,6 +128,8 @@ public class MainActivity extends AppCompatActivity implements INoteClickListene
     public void onWindowFocusChanged(boolean focus){
         if(focus) {
             m_nlf.loadNoteList();
+        } else {
+            NoteSQLHelper.unregisterNotesChangedListener(this);
         }
     }
 
