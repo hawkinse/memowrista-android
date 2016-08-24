@@ -79,6 +79,12 @@ public class MainActivity extends AppCompatActivity implements INoteClickListene
     public boolean onCreateOptionsMenu(Menu menu)
     {
         getMenuInflater().inflate(R.menu.activity_main_toolbar_menu, menu);
+
+        MenuItem deleteMenuItem = menu.findItem(R.id.action_note_delete);
+        if(deleteMenuItem != null){
+            deleteMenuItem.setVisible(usingTabletLayout());
+        }
+
         return true;
     }
 
@@ -95,6 +101,18 @@ public class MainActivity extends AppCompatActivity implements INoteClickListene
 
             case R.id.action_show_about:
                 showAboutMessage();
+                return true;
+
+            case R.id.action_note_delete:
+                if(usingTabletLayout()){
+                    m_ncf.deleteNote();
+                    m_nlf.loadNoteList();
+                    //Auto-load the first entry if present
+                    NoteStruct firstNote = m_nlf.getNoteAtIndex(0);
+                    if(firstNote != null){
+                        m_ncf.setNote(firstNote);
+                    }
+                }
                 return true;
             default:
                 // If we got here, the user's action was not recognized.
