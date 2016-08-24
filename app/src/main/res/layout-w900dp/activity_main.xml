@@ -40,19 +40,13 @@
             android:outlineProvider="bounds"/>
 
 
-        <!-- Until you can figure out a way to incorporate elevation into the fragment, add a divider -->
-        <!--
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/colorDividerShadow"
-            android:elevation="4dp"/>
-        -->
+        <!-- Linear layout exists purely to get elevation drop shadow -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/colorDividerShadow"
             android:elevation="8dp">
+
             <fragment class="com.example.elliothawkins.wristnote.NoteContentFragment"
                 android:id="@+id/content_frag"
                 android:layout_width="match_parent"
@@ -60,10 +54,6 @@
                 tools:layout="@layout/fragment_note_content"
                 />
         </LinearLayout>
-
-
-
-
 
     </LinearLayout>
 </RelativeLayout>
