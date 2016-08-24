@@ -57,12 +57,15 @@ public class MainActivity extends AppCompatActivity implements INoteClickListene
         m_ncf = (NoteContentFragment) getSupportFragmentManager().findFragmentById(R.id.content_frag);
 
         if(usingTabletLayout()){
+            m_nlf.setHighlightEnabled(true);
+
             //Auto-load the first entry if present
             NoteStruct firstNote = m_nlf.getNoteAtIndex(0);
             if(firstNote != null){
                 m_ncf.setNote(firstNote);
             }
         }
+
         //makeDummyNoteList();
         //loadNoteList();
 
@@ -150,6 +153,7 @@ public class MainActivity extends AppCompatActivity implements INoteClickListene
             //TODO - highlight view!
             //TODO - unhighlight old view!
             //TODO - ensure view is scrolled into view if off screen!
+            m_nlf.setHighlightedNote(listIndex);
         } else {
             Intent noteIntent = new Intent(MainActivity.this, NoteActivity.class);
             noteIntent.putExtra("ID", note.ID);
@@ -161,6 +165,7 @@ public class MainActivity extends AppCompatActivity implements INoteClickListene
 
     public void onNotesChanged(){
         m_nlf.loadNoteList();
+        m_nlf.setHighlightedNote(0);
     }
 
     private boolean usingTabletLayout(){

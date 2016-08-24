@@ -44,7 +44,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/colorDividerShadow"
-            android:elevation="8dp">
+            android:elevation="@dimen/note_fragment_elevation">
 
             <fragment class="com.example.elliothawkins.wristnote.NoteContentFragment"
                 android:id="@+id/content_frag"

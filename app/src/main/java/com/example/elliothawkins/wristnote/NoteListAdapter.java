@@ -3,6 +3,8 @@ package com.example.elliothawkins.wristnote;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +25,8 @@ public class NoteListAdapter extends BaseAdapter {
     private INoteClickListener m_clickedListener;
     private NoteStruct[] mNotes;
 
+    private boolean m_enableHighlight = false;
+    private int m_highlightedIndex = 0;
 
     public NoteListAdapter(Activity parentActivity, NoteStruct[] notes, INoteClickListener listener){
         mNotes = notes;
@@ -49,6 +53,7 @@ public class NoteListAdapter extends BaseAdapter {
 
     public View getView(final int position, View contentView, ViewGroup parent){
         final View rowView = mInflater.inflate(R.layout.listitem_note, null);
+
         TextView tvNoteTitle = (TextView)rowView.findViewById(R.id.note_listitem_name);
         TextView tvNoteTimestamp = (TextView)rowView.findViewById(R.id.note_listitem_timestamp);
 
@@ -61,6 +66,16 @@ public class NoteListAdapter extends BaseAdapter {
         tvNoteTitle.setText(mNotes[position].title);
         tvNoteTimestamp.setText(modifiedDateString + " ID: " + mNotes[position].ID);
 
+        if((m_enableHighlight) && (position == m_highlightedIndex)){
+            //Set highlight
+            rowView.setBackgroundColor(ContextCompat.getColor(mContext, R.color.colorMenuHighlight));
+
+            //Add height if material design is supported
+            if(Build.VERSION.SDK_INT >= 21) {
+                rowView.setElevation(mContext.getResources().getDimension(R.dimen.note_fragment_elevation));
+            }
+        }
+
         rowView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v){
@@ -69,5 +84,13 @@ public class NoteListAdapter extends BaseAdapter {
         });
 
         return rowView;
+    }
+
+    public void setHighlighted(int index){
+        m_highlightedIndex = index;
+    }
+
+    public void setHighlightEnabled(boolean highlight){
+        m_enableHighlight = highlight;
     }
 }
