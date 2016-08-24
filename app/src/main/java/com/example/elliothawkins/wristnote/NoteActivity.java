@@ -42,7 +42,9 @@ public class NoteActivity extends AppCompatActivity {
 
         //Add a back button to the toolbar
         final ActionBar toolbarAsActionBar = getSupportActionBar();
-        toolbarAsActionBar.setDisplayHomeAsUpEnabled(true);
+        if(toolbarAsActionBar != null) {
+            toolbarAsActionBar.setDisplayHomeAsUpEnabled(true);
+        }
 
         m_etTitle = (EditText) findViewById(R.id.note_edit_text_title);
         m_etBody = (EditText) findViewById(R.id.note_edit_text_body);

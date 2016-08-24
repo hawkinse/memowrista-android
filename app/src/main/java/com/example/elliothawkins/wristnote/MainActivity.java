@@ -150,7 +150,6 @@ public class MainActivity extends AppCompatActivity implements INoteClickListene
         return bIsTablet;
     }
     private void newNote(){
-        //TODO - separate code paths for tablet and phone. Make relative to fragment instead of activity!
         //TODO - Instead of passing in -1, create new note in DB and pass that!
         if(usingTabletLayout()){
             m_ncf.setNote(new NoteStruct());

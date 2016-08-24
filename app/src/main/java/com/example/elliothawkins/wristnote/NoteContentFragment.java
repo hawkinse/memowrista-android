@@ -156,6 +156,8 @@ public class NoteContentFragment extends Fragment {
 
             if (note != null && note.ID > -1) {
                 if ((!m_etTitle.getText().equals(note.title)) || (!m_etBody.getText().equals(note.body))) {
+                    mTitle = note.title;
+                    mBody = note.body;
                     m_etTitle.setText(note.title);
                     m_etBody.setText(note.body);
                 }
