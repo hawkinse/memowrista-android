@@ -21,7 +21,6 @@
         />
 
     <LinearLayout
-        android:paddingLeft="@dimen/activity_horizontal_margin"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/main_toolbar"
