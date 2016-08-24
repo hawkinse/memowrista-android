@@ -132,9 +132,6 @@ public class NoteContentFragment extends Fragment {
             newNote.title = m_etTitle.getText().toString();
             newNote.body = m_etBody.getText().toString();
 
-            if(newNote.title.isEmpty()){
-                newNote.title = getString(R.string.default_note_title);
-            }
             //Toast.makeText(this, "Writing note!", Toast.LENGTH_SHORT).show();
             mID = sqlHelper.writeNote(newNote);
             sqlHelper.close();

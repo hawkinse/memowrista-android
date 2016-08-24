@@ -182,15 +182,23 @@ public class MainActivity extends AppCompatActivity implements INoteClickListene
         return bIsTablet;
     }
     private void newNote(){
-        //TODO - Instead of passing in -1, create new note in DB and pass that!
+        //Create a new note
+        NoteSQLHelper sqlHelper = new NoteSQLHelper(this);
+        NoteStruct newNote = new NoteStruct();
+        long id = sqlHelper.writeNote(newNote);
+        newNote = sqlHelper.getNote(id);
+        sqlHelper.close();
+
+        m_nlf.loadNoteList();
+
         if(usingTabletLayout()){
-            m_ncf.setNote(new NoteStruct());
-            m_ncf.writeNote();
-            m_nlf.loadNoteList();
-            //Todo - get current Note ID out of the note content view so we can keep track of what should be highlighted
+            m_ncf.setNote(newNote);
+            //m_ncf.writeNote();
+            //m_nlf.loadNoteList();
         } else {
+            //TODO - find way to directly pass note struct instead of id to reload
             Intent noteIntent = new Intent(MainActivity.this, NoteActivity.class);
-            noteIntent.putExtra("ID", -1);
+            noteIntent.putExtra("ID", newNote.ID);
             startActivity(noteIntent);
         }
     }

@@ -62,8 +62,8 @@ public class NoteListAdapter extends BaseAdapter {
         String modifiedDateString = "Last modified on " + modifiedDateCal.get(Calendar.YEAR) + "/" + modifiedDateCal.get(Calendar.MONTH) + "/" + modifiedDateCal.get(Calendar.DAY_OF_MONTH) +
                                     " at " + modifiedDateCal.get(Calendar.HOUR) + ":" + modifiedDateCal.get(Calendar.MINUTE) + ":" + modifiedDateCal.get(Calendar.SECOND) + " " +
                                     (modifiedDateCal.get(Calendar.AM_PM) == 1 ? "PM" : "AM");
-        //Test of functionality
-        tvNoteTitle.setText(mNotes[position].title);
+
+        tvNoteTitle.setText(mNotes[position].title.isEmpty() ? mContext.getString(R.string.default_note_title) : mNotes[position].title);
         tvNoteTimestamp.setText(modifiedDateString + " ID: " + mNotes[position].ID);
 
         if((m_enableHighlight) && (position == m_highlightedIndex)){
