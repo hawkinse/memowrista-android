@@ -124,7 +124,7 @@ public class NoteContentFragment extends Fragment {
     //Was private before moving to fragment
     public void writeNote(){
         if(mID > 0 && m_etTitle.getText().toString().equals(mTitle) && m_etBody.getText().toString().equals(mBody)){
-            Toast.makeText(getContext(), "Note is unchanged! Not updating or inserting.", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getContext(), "Note is unchanged! Not updating or inserting.", Toast.LENGTH_SHORT).show();
         } else {
             NoteSQLHelper sqlHelper = new NoteSQLHelper(getActivity());
             NoteStruct newNote = new NoteStruct();

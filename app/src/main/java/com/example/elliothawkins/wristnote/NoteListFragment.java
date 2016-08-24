@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 /**
@@ -94,7 +95,13 @@ public class NoteListFragment extends Fragment {
     }
 
     public void loadNoteList(){
-        NoteSQLHelper sqlHelper = new NoteSQLHelper(getActivity());
+        Context loadContext = getActivity();
+        if(loadContext == null){
+            //Can't load notes if context doesn't exist.
+            return;
+        }
+
+        NoteSQLHelper sqlHelper = new NoteSQLHelper(loadContext);
         m_nsNotes = sqlHelper.getNotes();
         sqlHelper.close();
 
