@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Mirror of w900dp for large 4:3 tablets. Will replace once I know it wont show on larger phones -->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="com.example.elliothawkins.wristnote.MainActivity"
+    android:clipToPadding="false"
+    android:clipChildren="false"
+    android:outlineProvider="bounds">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/main_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:elevation="4dp"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        android:background="?attr/colorPrimary"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        />
+
+    <LinearLayout
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/main_toolbar"
+        android:clipToPadding="false"
+        android:clipChildren="false"
+        android:outlineProvider="bounds"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_gravity="center">
+
+        <fragment class="com.example.elliothawkins.wristnote.NoteListFragment"
+            android:id="@+id/list_frag"
+            android:layout_width="300dp"
+            android:layout_height="match_parent"
+            tools:layout="@layout/fragment_note_list"
+            android:outlineProvider="bounds"/>
+
+
+        <!-- Linear layout exists purely to get elevation drop shadow -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/colorDividerShadow"
+            android:elevation="8dp">
+
+            <fragment class="com.example.elliothawkins.wristnote.NoteContentFragment"
+                android:id="@+id/content_frag"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:layout="@layout/fragment_note_content"
+                />
+        </LinearLayout>
+
+    </LinearLayout>
+</RelativeLayout>
