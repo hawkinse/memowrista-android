@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.net.Uri;
 import android.support.v4.app.NavUtils;
@@ -16,6 +17,7 @@ import android.text.SpannableString;
 import android.text.method.LinkMovementMethod;
 import android.text.util.Linkify;
 import android.util.Log;
+import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -38,6 +40,8 @@ public class MainActivity extends AppCompatActivity implements INoteClickListene
 
     NoteListFragment m_nlf;
     NoteContentFragment m_ncf;
+
+    int m_lastHighlightedNote = 0;
 
     /*
     ListView m_lvNotes;
@@ -147,6 +151,30 @@ public class MainActivity extends AppCompatActivity implements INoteClickListene
         super.onPause();
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        // Save UI state changes to the savedInstanceState.
+        // This bundle will be passed to onCreate if the process is
+        // killed and restarted.
+        savedInstanceState.putInt("highlightedIndex", m_lastHighlightedNote);
+        // etc.
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        Toast.makeText(this, "Restoring index state!", Toast.LENGTH_LONG).show();
+        super.onRestoreInstanceState(savedInstanceState);
+
+        //Restore index from last state
+        m_lastHighlightedNote = savedInstanceState.getInt("highlightedIndex");
+        if(usingTabletLayout()) {
+            NoteStruct note = m_nlf.getNoteAtIndex(m_lastHighlightedNote);
+            OnNoteClicked(note, null, m_lastHighlightedNote);
+        }
+
+    }
+
     public void OnNoteClicked(NoteStruct note, View noteView, int listIndex){
         if(usingTabletLayout()){
             m_ncf.writeNote();
@@ -163,11 +191,14 @@ public class MainActivity extends AppCompatActivity implements INoteClickListene
             noteIntent.putExtra("Body", note.body);
             startActivity(noteIntent);
         }
+
+        m_lastHighlightedNote = listIndex;
     }
 
     public void onNotesChanged(){
         m_nlf.loadNoteList();
         m_nlf.setHighlightedNote(0);
+        m_lastHighlightedNote = 0;
     }
 
     private boolean usingTabletLayout(){
