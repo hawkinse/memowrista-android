@@ -170,7 +170,9 @@ public class MainActivity extends AppCompatActivity implements INoteClickListene
         m_lastHighlightedNote = savedInstanceState.getInt("highlightedIndex");
         if(usingTabletLayout()) {
             NoteStruct note = m_nlf.getNoteAtIndex(m_lastHighlightedNote);
-            OnNoteClicked(note, null, m_lastHighlightedNote);
+            if(note != null) {
+                OnNoteClicked(note, null, m_lastHighlightedNote);
+            }
         }
 
     }
