@@ -2,6 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.elliothawkins.wristnote">
 
+    <!--Permissions-->
+    <!-- RECEIVE_BOOT_COMPLETE required to automatically start PebbleComService at boot so the app doesn't have to manually be started once -->
+    <!-- WRITE_EXTERNAL_STORAGE required for writing notes to external xml files for backup purposes -->
+    <!-- READ_EXTERNAL_STORAGE required to read/restore notes from xml files into the internal database -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -14,7 +18,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <!-- configChanges is set to not destroy activities on rotate. Allows for better tablet UI experience -->
         <activity
             android:name=".MainActivity">
             <intent-filter>

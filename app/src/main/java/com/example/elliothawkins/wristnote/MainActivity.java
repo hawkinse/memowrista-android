@@ -110,6 +110,17 @@ public class MainActivity extends AppCompatActivity implements INoteClickListene
                 showAboutMessage();
                 return true;
 
+            case R.id.action_export:
+                Toast.makeText(this, "Exporting all notes!", Toast.LENGTH_SHORT).show();
+                NoteSQLHelper sqlHelper = new NoteSQLHelper(this);
+                boolean bSuccess = sqlHelper.backupDB("test.xml");
+                Toast.makeText(this, "Export " + (bSuccess ? "succeeded!" : "failed!"), Toast.LENGTH_LONG).show();
+                return true;
+
+            case R.id.action_import:
+                Toast.makeText(this, "Unimplemented!", Toast.LENGTH_LONG).show();
+                return true;
+
             case R.id.action_note_delete:
                 if(usingTabletLayout()){
                     m_ncf.deleteNote();

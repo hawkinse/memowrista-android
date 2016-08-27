@@ -22,6 +22,7 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Vector;
 
 /**
  * Created by Elliot Hawkins on 7/15/2016.
@@ -223,14 +224,65 @@ public class NoteSQLHelper extends SQLiteOpenHelper{
         updateNotesChangedListeners();
     }
 
-    boolean backupDB(String path){
-        //TODO - back up database at given path
+    public boolean backupDB(String filename){
+        return backupDB(filename, null);
+    }
+
+    public boolean backupDB(String filename, Vector<Integer> IDs){
         boolean bSuccess = false;
+
+        //TODO - ask for storage permission on >= android 6!
+        
+        //Check that external app storage is writable.
+        if(Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+
+            NoteStruct[] notes = getNotes();
+            if (notes != null) {
+                StringBuilder xmlBuilder = new StringBuilder();
+                xmlBuilder.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+                xmlBuilder.append("<notes>\n");
+                for (NoteStruct note : notes) {
+                    if(IDs == null || IDs.contains(note.ID)) {
+                        xmlBuilder.append("  <note>\n");
+                        xmlBuilder.append("    <title>" + note.title + "<\\title>\n");
+                        xmlBuilder.append("    <body>" + note.body + "<\\body>\n");
+                        xmlBuilder.append("    <timestamp>" + note.timestamp + "<\\timestamp>\n");
+                        xmlBuilder.append("  <\\note>\n");
+                    }
+                }
+                xmlBuilder.append("<\\notes>\n");
+
+                try {
+                    File rootDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).toString() +  "/WristNote");
+                    rootDir.mkdirs();
+
+                    File file = new File(rootDir, filename);
+
+                    //For now, overwrite file
+                    if(file.exists()){
+                        file.delete();
+                    } else {
+                        file.createNewFile();
+                    }
+                    //file.createNewFile();
+
+                    FileOutputStream fos = new FileOutputStream(file);
+                    byte[] writeBuffer = xmlBuilder.toString().getBytes();
+                    fos.write(writeBuffer);
+                    fos.close();
+
+                    bSuccess = true;
+
+                } catch (IOException ex){
+                    return bSuccess;
+                }
+            }
+        }
 
         return bSuccess;
     }
 
-    boolean restoreDB(String path){
+    boolean restoreDB(String filename){
         //TODO - restore database at given path
         boolean bSuccess = false;
 
