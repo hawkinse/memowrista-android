@@ -43,14 +43,18 @@ public class NoteContentFragment extends Fragment {
         m_etTitle.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                writeNote();
+                if(!hasFocus) {
+                    writeNote();
+                }
             }
         });
 
         m_etBody.setOnFocusChangeListener(new View.OnFocusChangeListener(){
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                writeNote();
+                if(!hasFocus) {
+                    writeNote();
+                }
             }
         });
 

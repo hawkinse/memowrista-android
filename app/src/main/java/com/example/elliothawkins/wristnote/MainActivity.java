@@ -174,7 +174,6 @@ public class MainActivity extends AppCompatActivity implements INoteClickListene
                 OnNoteClicked(note, null, m_lastHighlightedNote);
             }
         }
-
     }
 
     public void OnNoteClicked(NoteStruct note, View noteView, int listIndex){
