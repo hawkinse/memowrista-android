@@ -118,14 +118,13 @@ public class MainActivity extends AppCompatActivity implements INoteClickListene
                 return true;
 
             case R.id.action_export:
-                Toast.makeText(this, "Exporting all notes!", Toast.LENGTH_SHORT).show();
-                NoteSQLHelper sqlHelper = new NoteSQLHelper(this);
-                boolean bSuccess = sqlHelper.backupDB("test.xml");
-                Toast.makeText(this, "Export " + (bSuccess ? "succeeded!" : "failed!"), Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Attempting to export notes!", Toast.LENGTH_SHORT).show();
+                attemptExportNotes();
                 return true;
 
             case R.id.action_import:
-                Toast.makeText(this, "Unimplemented!", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Attempting to import notes!", Toast.LENGTH_LONG).show();
+                attemptImportNotes();
                 return true;
 
             case R.id.action_note_delete:
@@ -226,22 +225,41 @@ public class MainActivity extends AppCompatActivity implements INoteClickListene
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_GRANTED_EXPORT_NOTES);
         } else {
             NoteSQLHelper sqlHelper = new NoteSQLHelper(this);
-            sqlHelper.backupDB("test.xml");
+            boolean bSuccess = sqlHelper.backupDB("test.xml");
+            Toast.makeText(this, "Export notes " + (bSuccess ? "successful" : "failed!"), Toast.LENGTH_LONG).show();
+        }
+    }
+
+    //Attempts to import notes, if we have permission
+    private void attemptImportNotes(){
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSION_GRANTED_IMPORT_NOTES);
+        } else {
+            NoteSQLHelper sqlHelper = new NoteSQLHelper(this);
+            boolean bSuccess = sqlHelper.restoreDB("test.xml");
+            Toast.makeText(this, "Import notes " + (bSuccess ? "successful" : "failed!"), Toast.LENGTH_LONG).show();
         }
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults){
-        //Empty grant results mean that the request was canceled by the user
-        if(grantResults.length > 0) {
-            switch (requestCode) {
-                case PERMISSION_GRANTED_EXPORT_NOTES:
-                    break;
-                case PERMISSION_GRANTED_IMPORT_NOTES:
-                    break;
-                default:
-                    break;
-            }
+        switch (requestCode) {
+            case PERMISSION_GRANTED_EXPORT_NOTES:
+                if((grantResults.length > 0) && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                    attemptExportNotes();
+                } else {
+                    Toast.makeText(this, "WristNote requires storage permissions to store backup files on user storage!", Toast.LENGTH_LONG).show();
+                }
+                break;
+            case PERMISSION_GRANTED_IMPORT_NOTES:
+                if((grantResults.length > 0) && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                    attemptImportNotes();
+                } else {
+                    Toast.makeText(this, "WristNote requires storage permissions to read backup files on user storage!", Toast.LENGTH_LONG).show();
+                }
+                break;
+            default:
+                break;
         }
     }
 

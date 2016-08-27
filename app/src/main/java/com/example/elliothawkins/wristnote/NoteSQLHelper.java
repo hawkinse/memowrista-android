@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.os.Build;
 import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -236,8 +237,6 @@ public class NoteSQLHelper extends SQLiteOpenHelper{
     public boolean backupDB(String filename, Vector<Integer> IDs){
         boolean bSuccess = false;
 
-        //TODO - ask for storage permission on >= android 6!
-
         //Check that external app storage is writable.
         if(Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
 
@@ -258,7 +257,13 @@ public class NoteSQLHelper extends SQLiteOpenHelper{
                 xmlBuilder.append("<\\notes>\n");
 
                 try {
-                    File rootDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).toString() +  "/WristNote");
+                    File rootDir = null;
+                    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                       rootDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).toString() + "/WristNote");
+                    } else {
+                        rootDir = new File(Environment.getExternalStorageDirectory().toString() + "/Documents/WristNote");
+                    }
+
                     rootDir.mkdirs();
 
                     File file = new File(rootDir, filename);
