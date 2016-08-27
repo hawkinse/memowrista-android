@@ -14,8 +14,10 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.text.format.DateUtils;
 import android.util.Log;
+import android.util.Xml;
 import android.widget.Toast;
 
+import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlSerializer;
 
 import java.io.File;
@@ -23,6 +25,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Writer;
 import java.util.ArrayList;
@@ -248,13 +251,13 @@ public class NoteSQLHelper extends SQLiteOpenHelper{
                 for (NoteStruct note : notes) {
                     if(IDs == null || IDs.contains(note.ID)) {
                         xmlBuilder.append("  <note>\n");
-                        xmlBuilder.append("    <title>" + note.title + "<\\title>\n");
-                        xmlBuilder.append("    <body>" + note.body + "<\\body>\n");
-                        xmlBuilder.append("    <timestamp>" + note.timestamp + "<\\timestamp>\n");
-                        xmlBuilder.append("  <\\note>\n");
+                        xmlBuilder.append("    <title>" + note.title + "</title>\n");
+                        xmlBuilder.append("    <body>" + note.body + "</body>\n");
+                        xmlBuilder.append("    <timestamp>" + note.timestamp + "</timestamp>\n");
+                        xmlBuilder.append("  </note>\n");
                     }
                 }
-                xmlBuilder.append("<\\notes>\n");
+                xmlBuilder.append("</notes>\n");
 
                 try {
                     File rootDir = null;
@@ -295,6 +298,86 @@ public class NoteSQLHelper extends SQLiteOpenHelper{
     boolean restoreDB(String filename){
         //TODO - restore database at given path
         boolean bSuccess = false;
+
+        //Check that external app storage is readable.
+        if(Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED) || Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED_READ_ONLY)) {
+            File file = null;
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).toString() + "/WristNote", filename);
+            } else {
+                file = new File(Environment.getExternalStorageDirectory().toString() + "/Documents/WristNote", filename);
+            }
+
+            byte[] readBuffer = null;
+            ArrayList<NoteStruct> readNotes = new ArrayList<NoteStruct>();
+            try {
+                if (file.exists()) {
+                    FileInputStream fis = new FileInputStream(file);
+                    //readBuffer = new byte[fis.available()];
+                    //fis.read(readBuffer);
+
+                    //TODO - parse xml and insert into database
+                    XmlPullParser parser = Xml.newPullParser();
+                    parser.setInput(fis, null);
+
+                    int eventType = parser.getEventType();
+                    NoteStruct currentNote = null;
+                    Vector<String> tagStack = new Vector<String>();
+                    //String currentTag = null;
+                    String currentText = null;
+                    while (eventType != XmlPullParser.END_DOCUMENT) {
+                        switch (eventType) {
+                            case XmlPullParser.START_TAG:
+                                //currentTag = parser.getName();
+                                tagStack.add(parser.getName());
+                                if (/*currentTag.*/tagStack.lastElement().equalsIgnoreCase("note")) {
+                                    // create a new instance of employee
+                                    currentNote = new NoteStruct();
+                                }
+                                break;
+
+                            case XmlPullParser.TEXT:
+                                currentText = parser.getText();
+                                break;
+
+                            case XmlPullParser.END_TAG:
+                                if (/*currentTag*/tagStack.lastElement().equalsIgnoreCase("note")) {
+                                    readNotes.add(currentNote);
+                                    currentNote = null;
+                                } else if (/*currentTag*/tagStack.lastElement().equalsIgnoreCase("title")){
+                                    currentNote.title = currentText;
+                                } else if (/*currentTag*/tagStack.lastElement().equalsIgnoreCase("body")){
+                                    currentNote.body = currentText;
+                                } else if (/*currentTag*/tagStack.lastElement().equalsIgnoreCase("timestamp")){
+                                    currentNote.timestamp = Long.parseLong(currentText);
+                                }
+
+                                tagStack.remove(tagStack.lastElement());
+                                break;
+                            default:
+                                break;
+                        }
+                        eventType = parser.next();
+                    }
+
+                    fis.close();
+                }
+            } catch (IOException ex){
+                //Simply allow the false return
+                return false;
+            } catch (Exception ex) {
+                //Not sure what to do here yet.
+                return false;
+            }
+
+            if(readNotes != null){
+                for(NoteStruct note : readNotes){
+                    writeNote(note);
+                }
+
+                bSuccess = true;
+            }
+        }
 
         updateNotesChangedListeners();
 
