@@ -1,14 +1,18 @@
 package com.example.elliothawkins.wristnote;
 
+import android.Manifest;
 import android.app.ActionBar;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.net.Uri;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NavUtils;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -36,6 +40,9 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity implements INoteClickListener, INotesChangedListener {
+    static final int PERMISSION_GRANTED_EXPORT_NOTES = 0;
+    static final int PERMISSION_GRANTED_IMPORT_NOTES = 1;
+
     static final String PEBBLE_BINARY_PATH = "WristNote.pbw";
 
     NoteListFragment m_nlf;
@@ -211,6 +218,31 @@ public class MainActivity extends AppCompatActivity implements INoteClickListene
         m_nlf.loadNoteList();
         m_nlf.setHighlightedNote(0);
         m_lastHighlightedNote = 0;
+    }
+
+    //Attempts to export notes, if we have permission.
+    private void attemptExportNotes(){
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_GRANTED_EXPORT_NOTES);
+        } else {
+            NoteSQLHelper sqlHelper = new NoteSQLHelper(this);
+            sqlHelper.backupDB("test.xml");
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults){
+        //Empty grant results mean that the request was canceled by the user
+        if(grantResults.length > 0) {
+            switch (requestCode) {
+                case PERMISSION_GRANTED_EXPORT_NOTES:
+                    break;
+                case PERMISSION_GRANTED_IMPORT_NOTES:
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 
     private boolean usingTabletLayout(){
