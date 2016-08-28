@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
@@ -295,78 +296,59 @@ public class NoteSQLHelper extends SQLiteOpenHelper{
         return bSuccess;
     }
 
-    boolean restoreDB(String filename){
-        //TODO - restore database at given path
+    boolean importXmlFromStream(InputStream is){
         boolean bSuccess = false;
 
         //Check that external app storage is readable.
         if(Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED) || Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED_READ_ONLY)) {
-            File file = null;
-            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).toString() + "/WristNote", filename);
-            } else {
-                file = new File(Environment.getExternalStorageDirectory().toString() + "/Documents/WristNote", filename);
-            }
 
-            byte[] readBuffer = null;
-            ArrayList<NoteStruct> readNotes = new ArrayList<NoteStruct>();
+            ArrayList<NoteStruct> readNotes = new ArrayList<>();
             try {
-                if (file.exists()) {
-                    FileInputStream fis = new FileInputStream(file);
-                    //readBuffer = new byte[fis.available()];
-                    //fis.read(readBuffer);
+                //TODO - parse xml and insert into database
+                XmlPullParser parser = Xml.newPullParser();
+                parser.setInput(/*fis*/is, null);
 
-                    //TODO - parse xml and insert into database
-                    XmlPullParser parser = Xml.newPullParser();
-                    parser.setInput(fis, null);
+                int eventType = parser.getEventType();
+                NoteStruct currentNote = null;
+                Vector<String> tagStack = new Vector<String>();
+                //String currentTag = null;
+                String currentText = null;
+                while (eventType != XmlPullParser.END_DOCUMENT) {
+                    switch (eventType) {
+                        case XmlPullParser.START_TAG:
+                            //currentTag = parser.getName();
+                            tagStack.add(parser.getName());
+                            if (/*currentTag.*/tagStack.lastElement().equalsIgnoreCase("note")) {
+                                // create a new instance of employee
+                                currentNote = new NoteStruct();
+                            }
+                            break;
 
-                    int eventType = parser.getEventType();
-                    NoteStruct currentNote = null;
-                    Vector<String> tagStack = new Vector<String>();
-                    //String currentTag = null;
-                    String currentText = null;
-                    while (eventType != XmlPullParser.END_DOCUMENT) {
-                        switch (eventType) {
-                            case XmlPullParser.START_TAG:
-                                //currentTag = parser.getName();
-                                tagStack.add(parser.getName());
-                                if (/*currentTag.*/tagStack.lastElement().equalsIgnoreCase("note")) {
-                                    // create a new instance of employee
-                                    currentNote = new NoteStruct();
-                                }
-                                break;
+                        case XmlPullParser.TEXT:
+                            currentText = parser.getText();
+                            break;
 
-                            case XmlPullParser.TEXT:
-                                currentText = parser.getText();
-                                break;
+                        case XmlPullParser.END_TAG:
+                            if (/*currentTag*/tagStack.lastElement().equalsIgnoreCase("note")) {
+                                readNotes.add(currentNote);
+                                currentNote = null;
+                            } else if (/*currentTag*/tagStack.lastElement().equalsIgnoreCase("title")){
+                                currentNote.title = currentText;
+                            } else if (/*currentTag*/tagStack.lastElement().equalsIgnoreCase("body")){
+                                currentNote.body = currentText;
+                            } else if (/*currentTag*/tagStack.lastElement().equalsIgnoreCase("timestamp")){
+                                currentNote.timestamp = Long.parseLong(currentText);
+                            }
 
-                            case XmlPullParser.END_TAG:
-                                if (/*currentTag*/tagStack.lastElement().equalsIgnoreCase("note")) {
-                                    readNotes.add(currentNote);
-                                    currentNote = null;
-                                } else if (/*currentTag*/tagStack.lastElement().equalsIgnoreCase("title")){
-                                    currentNote.title = currentText;
-                                } else if (/*currentTag*/tagStack.lastElement().equalsIgnoreCase("body")){
-                                    currentNote.body = currentText;
-                                } else if (/*currentTag*/tagStack.lastElement().equalsIgnoreCase("timestamp")){
-                                    currentNote.timestamp = Long.parseLong(currentText);
-                                }
-
-                                tagStack.remove(tagStack.lastElement());
-                                break;
-                            default:
-                                break;
-                        }
-                        eventType = parser.next();
+                            tagStack.remove(tagStack.lastElement());
+                            break;
+                        default:
+                            break;
                     }
-
-                    fis.close();
+                    eventType = parser.next();
                 }
-            } catch (IOException ex){
-                //Simply allow the false return
-                return false;
             } catch (Exception ex) {
-                //Not sure what to do here yet.
+                Log.e("WristNote", ex.toString());
                 return false;
             }
 

@@ -2,6 +2,7 @@ package com.example.elliothawkins.wristnote;
 
 import android.Manifest;
 import android.app.ActionBar;
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -10,6 +11,8 @@ import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
+import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NavUtils;
 import android.support.v4.content.ContextCompat;
@@ -33,6 +36,8 @@ import com.getpebble.android.kit.PebbleKit;
 import com.getpebble.android.kit.util.PebbleDictionary;
 
 import java.io.File;
+import java.io.FileDescriptor;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -42,6 +47,8 @@ import java.util.UUID;
 public class MainActivity extends AppCompatActivity implements INoteClickListener, INotesChangedListener {
     static final int PERMISSION_GRANTED_EXPORT_NOTES = 0;
     static final int PERMISSION_GRANTED_IMPORT_NOTES = 1;
+    static final int BACKUP_DESTINATION_REQUEST_CODE = 2;
+    static final int RESTORE_DESTINATION_REQUEST_CODE = 3;
 
     static final String PEBBLE_BINARY_PATH = "WristNote.pbw";
 
@@ -124,7 +131,7 @@ public class MainActivity extends AppCompatActivity implements INoteClickListene
 
             case R.id.action_import:
                 Toast.makeText(this, "Attempting to import notes!", Toast.LENGTH_LONG).show();
-                attemptImportNotes();
+                openFileForImport();
                 return true;
 
             case R.id.action_note_delete:
@@ -219,26 +226,59 @@ public class MainActivity extends AppCompatActivity implements INoteClickListene
         m_lastHighlightedNote = 0;
     }
 
+    //TODO - change to something like "openFileForExport", reuse attemptExportNotes for the actual call to NoteSQLHelper!
     //Attempts to export notes, if we have permission.
     private void attemptExportNotes(){
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_GRANTED_EXPORT_NOTES);
         } else {
             NoteSQLHelper sqlHelper = new NoteSQLHelper(this);
-            boolean bSuccess = sqlHelper.backupDB("test.xml");
+            boolean bSuccess = sqlHelper.backupDB("backup.xml");
             Toast.makeText(this, "Export notes " + (bSuccess ? "successful" : "failed!"), Toast.LENGTH_LONG).show();
         }
     }
 
-    //Attempts to import notes, if we have permission
-    private void attemptImportNotes(){
+    //Opens a file picker to select a note to import. If we dont have sufficient permissions, will ask for permission first.
+    private void openFileForImport(){
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSION_GRANTED_IMPORT_NOTES);
         } else {
+            /*
             NoteSQLHelper sqlHelper = new NoteSQLHelper(this);
             boolean bSuccess = sqlHelper.restoreDB("test.xml");
             Toast.makeText(this, "Import notes " + (bSuccess ? "successful" : "failed!"), Toast.LENGTH_LONG).show();
+            */
+
+            //Open system file picker on Kitkat and up.
+            //Lower versions of Android have no system file picker. Instead use path /sdcard/Documents/WristNote/backup.xml
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                Intent fileIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                fileIntent.addCategory(Intent.CATEGORY_OPENABLE);
+                fileIntent.setType("text/xml");
+                startActivityForResult(fileIntent, RESTORE_DESTINATION_REQUEST_CODE);
+            } else {
+                if(Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED) || Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED_READ_ONLY)) {
+                    File file = new File(Environment.getExternalStorageDirectory().toString() + "/Documents/WristNote", "backup.xml");
+
+                    if(file.exists()){
+                        try {
+                            InputStream is = new FileInputStream(file);
+                            attemptImportNotes(is);
+                            is.close();
+                        } catch (Exception ex){
+                            Toast.makeText(this, "Something went wrong opening the file!", Toast.LENGTH_LONG);
+                            Log.e("WristNote", ex.toString());
+                        }
+                    }
+                }
+            }
         }
+    }
+
+    private void attemptImportNotes(InputStream is){
+        NoteSQLHelper sqlHelper = new NoteSQLHelper(this);
+        boolean bSuccess = sqlHelper.importXmlFromStream(is);
+        Toast.makeText(this, "Import notes " + (bSuccess ? "successful" : "failed!"), Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -253,7 +293,7 @@ public class MainActivity extends AppCompatActivity implements INoteClickListene
                 break;
             case PERMISSION_GRANTED_IMPORT_NOTES:
                 if((grantResults.length > 0) && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
-                    attemptImportNotes();
+                    openFileForImport();
                 } else {
                     Toast.makeText(this, "WristNote requires storage permissions to read backup files on user storage!", Toast.LENGTH_LONG).show();
                 }
@@ -263,6 +303,23 @@ public class MainActivity extends AppCompatActivity implements INoteClickListene
         }
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent resultData){
+        if(requestCode == RESTORE_DESTINATION_REQUEST_CODE && resultCode == Activity.RESULT_OK){
+            Uri uri = null;
+            if(resultData != null){
+                uri = resultData.getData();
+                try {
+                    InputStream is = getContentResolver().openInputStream(uri);
+                    attemptImportNotes(is);
+                    is.close();
+                } catch (Exception ex){
+                    Toast.makeText(this, "Something went wrong opening the file!", Toast.LENGTH_LONG);
+                    Log.e("WristNote", ex.toString());
+                }
+            }
+        }
+    }
     private boolean usingTabletLayout(){
         //Need to explicitly check for a missing view. Checking for the fragment containing the view will fail with rotation!
         boolean bIsTablet = (findViewById(R.id.note_edit_text_title) != null);
