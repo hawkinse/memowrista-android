@@ -234,11 +234,11 @@ public class NoteSQLHelper extends SQLiteOpenHelper{
         updateNotesChangedListeners();
     }
 
-    public boolean backupDB(String filename){
-        return backupDB(filename, null);
+    public boolean exportXmlToStream(OutputStream os){
+        return exportXmlToStream(os, null);
     }
 
-    public boolean backupDB(String filename, Vector<Integer> IDs){
+    public boolean exportXmlToStream(OutputStream os, Vector<Integer> IDs){
         boolean bSuccess = false;
 
         //Check that external app storage is writable.
@@ -261,29 +261,9 @@ public class NoteSQLHelper extends SQLiteOpenHelper{
                 xmlBuilder.append("</notes>\n");
 
                 try {
-                    File rootDir = null;
-                    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                       rootDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).toString() + "/WristNote");
-                    } else {
-                        rootDir = new File(Environment.getExternalStorageDirectory().toString() + "/Documents/WristNote");
-                    }
 
-                    rootDir.mkdirs();
-
-                    File file = new File(rootDir, filename);
-
-                    //For now, overwrite file
-                    if(file.exists()){
-                        file.delete();
-                    } else {
-                        file.createNewFile();
-                    }
-                    //file.createNewFile();
-
-                    FileOutputStream fos = new FileOutputStream(file);
                     byte[] writeBuffer = xmlBuilder.toString().getBytes();
-                    fos.write(writeBuffer);
-                    fos.close();
+                    os.write(writeBuffer);
 
                     bSuccess = true;
 

@@ -13,6 +13,8 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
+import android.os.ParcelFileDescriptor;
+import android.provider.DocumentsContract;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NavUtils;
 import android.support.v4.content.ContextCompat;
@@ -42,6 +44,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -222,10 +225,13 @@ public class MainActivity extends AppCompatActivity implements INoteClickListene
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_GRANTED_EXPORT_NOTES);
         } else {
-            //Open system folder picker on Lollipop and up.
-            //Lower versions of Android have no system file picker. Instead use path /sdcard/Documents/WristNote/backup.xml
+            //Open system document creator on Lollipop and up.
+            //Lower versions of Android have no system document creator. Instead use path /sdcard/Documents/WristNote/backup.xml
             if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                Intent fileIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+                Intent fileIntent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+                fileIntent.addCategory(Intent.CATEGORY_OPENABLE);
+                fileIntent.setType("text/xml");
+                fileIntent.putExtra(Intent.EXTRA_TITLE, "backup.xml");
                 startActivityForResult(fileIntent, BACKUP_DESTINATION_REQUEST_CODE);
             } else {
                 if(Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
@@ -251,18 +257,9 @@ public class MainActivity extends AppCompatActivity implements INoteClickListene
     //TODO - change to something like "openFileForExport", reuse attemptExportNotes for the actual call to NoteSQLHelper!
     //Attempts to export notes, if we have permission.
     private void attemptExportNotes(OutputStream os){
-        /*
-        if(ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_GRANTED_EXPORT_NOTES);
-        } else {
-            NoteSQLHelper sqlHelper = new NoteSQLHelper(this);
-            boolean bSuccess = sqlHelper.backupDB("backup.xml");
-            Toast.makeText(this, "Export notes " + (bSuccess ? "successful" : "failed!"), Toast.LENGTH_LONG).show();
-        }
-        */
         NoteSQLHelper sqlHelper = new NoteSQLHelper(this);
-        //boolean bSuccess = sqlHelper.backupDB(os);
-        //Toast.makeText(this, "Export notes " + (bSuccess ? "successful" : "failed!"), Toast.LENGTH_LONG).show();
+        boolean bSuccess = sqlHelper.exportXmlToStream(os);
+        Toast.makeText(this, "Export notes " + (bSuccess ? "successful" : "failed!"), Toast.LENGTH_LONG).show();
     }
 
     //Opens a file picker to select a note to import. If we dont have sufficient permissions, will ask for permission first.
@@ -340,13 +337,19 @@ public class MainActivity extends AppCompatActivity implements INoteClickListene
                 }
             }
         } else if (requestCode == BACKUP_DESTINATION_REQUEST_CODE && resultCode == Activity.RESULT_OK){
-            Uri uri = null;
-            if(resultData != null){
-                uri = resultData.getData();
-                try {
-                    //Todo - prompt for file name and write file.
-                } catch(Exception ex){
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                if (resultData != null) {
+                    Uri uri = null;
+                    uri = resultData.getData();
+                    try {
+                        OutputStream os = getContentResolver().openOutputStream(uri);
+                        attemptExportNotes(os);
+                        os.close();
 
+                    } catch (Exception ex) {
+                        Toast.makeText(this, "Something went wrong opening the file!", Toast.LENGTH_LONG);
+                        Log.e("WristNote", ex.toString());
+                    }
                 }
             }
         }
