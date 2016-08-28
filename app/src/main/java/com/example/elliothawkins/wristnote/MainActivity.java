@@ -16,6 +16,7 @@ import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NavUtils;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.provider.DocumentFile;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -57,12 +58,6 @@ public class MainActivity extends AppCompatActivity implements INoteClickListene
 
     int m_lastHighlightedNote = 0;
 
-    /*
-    ListView m_lvNotes;
-    TextView m_tvMain;
-    NoteStruct[] m_nsNotes;
-    */
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,10 +79,6 @@ public class MainActivity extends AppCompatActivity implements INoteClickListene
             }
         }
 
-        //makeDummyNoteList();
-        //loadNoteList();
-
-        //TODO - add settings toggle for this!
         Intent pebbleComServiceIntent = new Intent(getBaseContext(), PebbleComService.class);
         startService(pebbleComServiceIntent);
 
@@ -126,7 +117,8 @@ public class MainActivity extends AppCompatActivity implements INoteClickListene
 
             case R.id.action_export:
                 Toast.makeText(this, "Attempting to export notes!", Toast.LENGTH_SHORT).show();
-                attemptExportNotes();
+                //attemptExportNotes();
+                openFileForExport();
                 return true;
 
             case R.id.action_import:
@@ -226,9 +218,40 @@ public class MainActivity extends AppCompatActivity implements INoteClickListene
         m_lastHighlightedNote = 0;
     }
 
+    private void openFileForExport(){
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_GRANTED_EXPORT_NOTES);
+        } else {
+            //Open system folder picker on Lollipop and up.
+            //Lower versions of Android have no system file picker. Instead use path /sdcard/Documents/WristNote/backup.xml
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                Intent fileIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+                startActivityForResult(fileIntent, BACKUP_DESTINATION_REQUEST_CODE);
+            } else {
+                if(Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+                    File file = new File(Environment.getExternalStorageDirectory().toString() + "/Documents/WristNote", "backup.xml");
+                    file.mkdirs();
+
+                    if(file.exists()) {
+                        file.delete();
+                    } else {
+                        try {
+                            OutputStream os = new FileOutputStream(file);
+                            attemptExportNotes(os);
+                            os.close();
+                        } catch (Exception ex){
+                            Toast.makeText(this, "Something went wrong opening the file!", Toast.LENGTH_LONG);
+                            Log.e("WristNote", ex.toString());
+                        }
+                    }
+                }
+            }
+        }
+    }
     //TODO - change to something like "openFileForExport", reuse attemptExportNotes for the actual call to NoteSQLHelper!
     //Attempts to export notes, if we have permission.
-    private void attemptExportNotes(){
+    private void attemptExportNotes(OutputStream os){
+        /*
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_GRANTED_EXPORT_NOTES);
         } else {
@@ -236,6 +259,10 @@ public class MainActivity extends AppCompatActivity implements INoteClickListene
             boolean bSuccess = sqlHelper.backupDB("backup.xml");
             Toast.makeText(this, "Export notes " + (bSuccess ? "successful" : "failed!"), Toast.LENGTH_LONG).show();
         }
+        */
+        NoteSQLHelper sqlHelper = new NoteSQLHelper(this);
+        //boolean bSuccess = sqlHelper.backupDB(os);
+        //Toast.makeText(this, "Export notes " + (bSuccess ? "successful" : "failed!"), Toast.LENGTH_LONG).show();
     }
 
     //Opens a file picker to select a note to import. If we dont have sufficient permissions, will ask for permission first.
@@ -243,12 +270,6 @@ public class MainActivity extends AppCompatActivity implements INoteClickListene
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSION_GRANTED_IMPORT_NOTES);
         } else {
-            /*
-            NoteSQLHelper sqlHelper = new NoteSQLHelper(this);
-            boolean bSuccess = sqlHelper.restoreDB("test.xml");
-            Toast.makeText(this, "Import notes " + (bSuccess ? "successful" : "failed!"), Toast.LENGTH_LONG).show();
-            */
-
             //Open system file picker on Kitkat and up.
             //Lower versions of Android have no system file picker. Instead use path /sdcard/Documents/WristNote/backup.xml
             if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
@@ -286,7 +307,7 @@ public class MainActivity extends AppCompatActivity implements INoteClickListene
         switch (requestCode) {
             case PERMISSION_GRANTED_EXPORT_NOTES:
                 if((grantResults.length > 0) && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
-                    attemptExportNotes();
+                    openFileForExport();
                 } else {
                     Toast.makeText(this, "WristNote requires storage permissions to store backup files on user storage!", Toast.LENGTH_LONG).show();
                 }
@@ -318,8 +339,19 @@ public class MainActivity extends AppCompatActivity implements INoteClickListene
                     Log.e("WristNote", ex.toString());
                 }
             }
+        } else if (requestCode == BACKUP_DESTINATION_REQUEST_CODE && resultCode == Activity.RESULT_OK){
+            Uri uri = null;
+            if(resultData != null){
+                uri = resultData.getData();
+                try {
+                    //Todo - prompt for file name and write file.
+                } catch(Exception ex){
+
+                }
+            }
         }
     }
+
     private boolean usingTabletLayout(){
         //Need to explicitly check for a missing view. Checking for the fragment containing the view will fail with rotation!
         boolean bIsTablet = (findViewById(R.id.note_edit_text_title) != null);
