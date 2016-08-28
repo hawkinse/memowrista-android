@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context="com.example.elliothawkins.wristnote.MainActivity"
+    tools:context="com.elliothawkins.wristnote.MainActivity"
     android:clipToPadding="false"
     android:clipChildren="false"
     android:outlineProvider="bounds">
@@ -31,7 +31,7 @@
         android:gravity="center"
         android:layout_gravity="center">
 
-        <fragment class="com.example.elliothawkins.wristnote.NoteListFragment"
+        <fragment class="com.elliothawkins.wristnote.NoteListFragment"
             android:id="@+id/list_frag"
             android:layout_width="300dp"
             android:layout_height="match_parent"
@@ -46,7 +46,7 @@
             android:background="@color/colorDividerShadow"
             android:elevation="@dimen/note_fragment_elevation">
 
-            <fragment class="com.example.elliothawkins.wristnote.NoteContentFragment"
+            <fragment class="com.elliothawkins.wristnote.NoteContentFragment"
                 android:id="@+id/content_frag"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

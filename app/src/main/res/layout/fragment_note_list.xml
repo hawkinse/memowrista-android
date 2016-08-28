@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.elliothawkins.wristnote.NoteListFragment">
+    tools:context="com.elliothawkins.wristnote.NoteListFragment">
 
     <TextView
         android:id="@+id/main_textview"

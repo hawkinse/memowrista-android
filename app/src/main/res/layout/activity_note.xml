@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:isScrollContainer="false"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context="com.example.elliothawkins.wristnote.NoteActivity"
+    tools:context="com.elliothawkins.wristnote.NoteActivity"
     >
 
     <android.support.v7.widget.Toolbar android:id="@+id/note_toolbar"
@@ -47,7 +47,7 @@
 
             />
             -->
-        <fragment class="com.example.elliothawkins.wristnote.NoteContentFragment"
+        <fragment class="com.elliothawkins.wristnote.NoteContentFragment"
             android:id="@+id/content_frag"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

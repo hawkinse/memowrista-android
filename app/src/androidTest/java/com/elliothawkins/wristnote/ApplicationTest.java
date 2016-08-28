@@ -1,4 +1,4 @@
-package com.example.elliothawkins.wristnote;
+package com.elliothawkins.wristnote;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

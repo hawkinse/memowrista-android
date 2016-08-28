@@ -1,4 +1,4 @@
-package com.example.elliothawkins.wristnote;
+package com.elliothawkins.wristnote;
 
 /**
  * Created by Elliot Hawkins on 7/15/2016.

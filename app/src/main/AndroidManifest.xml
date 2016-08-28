@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.elliothawkins.wristnote">
+    package="com.elliothawkins.wristnote">
 
     <!--Permissions-->
     <!-- RECEIVE_BOOT_COMPLETE required to automatically start PebbleComService at boot so the app doesn't have to manually be started once -->

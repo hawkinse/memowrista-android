@@ -1,4 +1,4 @@
-package com.example.elliothawkins.wristnote;
+package com.elliothawkins.wristnote;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

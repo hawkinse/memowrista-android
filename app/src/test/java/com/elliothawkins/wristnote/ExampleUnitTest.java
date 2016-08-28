@@ -1,4 +1,4 @@
-package com.example.elliothawkins.wristnote;
+package com.elliothawkins.wristnote;
 
 import org.junit.Test;
 

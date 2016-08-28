@@ -1,8 +1,7 @@
-package com.example.elliothawkins.wristnote;
+package com.elliothawkins.wristnote;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Build;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
@@ -10,10 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.Calendar;
-import java.util.Date;
 
 /**
  * Created by Elliot Hawkins on 7/15/2016.

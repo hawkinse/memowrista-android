@@ -1,4 +1,4 @@
-package com.example.elliothawkins.wristnote;
+package com.elliothawkins.wristnote;
 
 import android.content.Context;
 import android.net.Uri;
@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 
 /**

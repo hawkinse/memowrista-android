@@ -1,17 +1,14 @@
-package com.example.elliothawkins.wristnote;
+package com.elliothawkins.wristnote;
 
 import android.app.Service;
-import android.content.ComponentCallbacks2;
 import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
-import android.view.View;
 import android.widget.Toast;
 
 import com.getpebble.android.kit.PebbleKit;
 import com.getpebble.android.kit.util.PebbleDictionary;
 
-import java.util.ArrayList;
 import java.util.UUID;
 
 public class PebbleComService extends Service {

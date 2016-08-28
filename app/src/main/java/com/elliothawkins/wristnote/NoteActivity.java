@@ -1,26 +1,13 @@
-package com.example.elliothawkins.wristnote;
+package com.elliothawkins.wristnote;
 
-import android.content.Intent;
 import android.os.Build;
-import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.view.ActionMode;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TimerTask;
 
 public class NoteActivity extends AppCompatActivity {
 

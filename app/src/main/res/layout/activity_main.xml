@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context="com.example.elliothawkins.wristnote.MainActivity">
+    tools:context="com.elliothawkins.wristnote.MainActivity">
 
     <android.support.v7.widget.Toolbar android:id="@+id/main_toolbar"
         android:layout_width="match_parent"
@@ -37,7 +37,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"></ListView>
         -->
-        <fragment class="com.example.elliothawkins.wristnote.NoteListFragment"
+        <fragment class="com.elliothawkins.wristnote.NoteListFragment"
             android:id="@+id/list_frag"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
