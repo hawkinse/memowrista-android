@@ -7,7 +7,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <!--Pebble local storage API can only handle 256 byte arrays, so if we want to cache note titles we also need to be 255 chars + null terminator-->
+        <!--Length is limited to 95 characters to conserve ram on Pebble app-->
         <EditText
             android:id="@+id/note_edit_text_title"
             android:layout_width="match_parent"
@@ -15,7 +15,7 @@
             android:hint="@string/note_text_title_hint"
             android:textSize="22dp"
             android:textStyle="bold"
-            android:maxLength="255"/>
+            android:maxLength="95"/>
         <EditText
             android:id="@+id/note_edit_text_body"
             android:layout_width="match_parent"
