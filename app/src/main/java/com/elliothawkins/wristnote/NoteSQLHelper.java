@@ -80,7 +80,7 @@ public class NoteSQLHelper extends SQLiteOpenHelper{
 
         values.put(COLUMN_NAME_TITLE, note.title);
         values.put(COLUMN_NAME_BODY, note.body);
-        values.put(COLUMN_NAME_MODIFIED_TIMESTAMP, System.currentTimeMillis());
+        values.put(COLUMN_NAME_MODIFIED_TIMESTAMP, (note.timestamp == 0) ? System.currentTimeMillis() : note.timestamp);
 
         long id = db.insert(TABLE_NAME, null, values);
 
