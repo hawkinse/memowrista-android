@@ -5,8 +5,13 @@
     <color name="colorPrimaryDark">#af9146</color>
     <color name="colorAccent">#e2c479</color>
     -->
+    <!-- Old non-Pebble compatible colors
     <color name="colorPrimary">#976133</color>
     <color name="colorPrimaryDark">#7d4f2f</color>
+    -->
+    <!-- Primary color is same as color used in Pebble app-->
+    <color name="colorPrimary">#AA5500</color>
+    <color name = "colorPrimaryDark">#884400</color>
     <!-- Tan accent
     <color name="colorAccent">#b69e71</color>
     -->
