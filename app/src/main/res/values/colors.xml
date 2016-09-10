@@ -6,12 +6,17 @@
     <color name="colorAccent">#e2c479</color>
     -->
     <!-- Old non-Pebble compatible colors
-    <color name="colorPrimary">#976133</color>
+    <color name="colSorPrimary">#976133</color>
     <color name="colorPrimaryDark">#7d4f2f</color>
     -->
-    <!-- Primary color is same as color used in Pebble app-->
+    <!-- Primary color is same as color used in Pebble app - old colors
     <color name="colorPrimary">#AA5500</color>
     <color name = "colorPrimaryDark">#884400</color>
+    -->
+    <!-- Primary color is same as used in Pebble app - new colors -->
+    <!-- Primary color is same as color used in Pebble app - old colors-->
+    <color name="colorPrimary">#550000</color>
+    <color name = "colorPrimaryDark">#440000</color>
     <!-- Tan accent
     <color name="colorAccent">#b69e71</color>
     -->
