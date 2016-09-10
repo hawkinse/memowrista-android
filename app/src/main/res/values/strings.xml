@@ -1,10 +1,10 @@
 <resources>
-    <string name="app_name">WristNote</string>
+    <string name="app_name">MemoWrista</string>
     <string name="main_loading">Loading notes...</string>
     <string name="main_no_notes">No notes found. Press + to create one!</string>
     <string name="toolbar_text_newnote">New Note</string>
     <string name="toolbar_text_install_watchapp">Install Pebble WatchApp</string>
-    <string name="toolbar_text_about">About WristNote</string>
+    <string name="toolbar_text_about">About MemoWrista</string>
     <string name="note_text_title_hint">Add note title here...</string>
     <string name="note_text_body_hint">Add note contents here...</string>
     <string name="toolbar_text_delete">Delete Note</string>
@@ -15,9 +15,9 @@
     <string name="note_header_title_placeholder">NOTE TITLE GOES HERE</string>
     <string name="note_header_timestamp_placeholder">NOTE UPDATE TIMESTAMP GOES HERE</string>
     <string name="default_note_title">Unnamed Note</string>
-    <string name="about_title">About WristNote</string>
+    <string name="about_title">About MemoWrista</string>
     <string name="about_body">
-        WristNote by Elliot Hawkins\n\nThis application is released under an (open TBD) license. Details and source code for Android app:\n\n
+        MemoWrista by Elliot Hawkins\n\nThis application is released under an (open TBD) license. Details and source code for Android app:\n\n
         <a href="https:\\www.bitbucket.org\hawkinse">https://bitbucket.org/hawkinse/WristNote-Android</a>
         \n\nPebble companion app:\n\n
         <a href="https:\\www.bitbucket.org\hawkinse">https://bitbucket.org/hawkinse/WristNote-Pebble</a>
