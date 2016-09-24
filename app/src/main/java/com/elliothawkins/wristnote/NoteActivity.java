@@ -27,18 +27,13 @@ public class NoteActivity extends AppCompatActivity {
         Toolbar myToolbar = (Toolbar) findViewById(R.id.note_toolbar);
         setSupportActionBar(myToolbar);
 
-        //Add a back button to the toolbar
-        final ActionBar toolbarAsActionBar = getSupportActionBar();
-        if(toolbarAsActionBar != null) {
-            toolbarAsActionBar.setDisplayHomeAsUpEnabled(true);
-        }
-
         m_etTitle = (EditText) findViewById(R.id.note_edit_text_title);
         m_etBody = (EditText) findViewById(R.id.note_edit_text_body);
         m_ncf = (NoteContentFragment) getSupportFragmentManager().findFragmentById(R.id.content_frag);
 
         //Hides the action bar during copy/paste if running below Android 6
         //Otherwise it gets pushed down, looks ugly
+        final ActionBar toolbarAsActionBar = getSupportActionBar();
         if(Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             //TODO - Replace with custom copy/paste actionbar. There's still a brief period where both bars exist after onDestroyActionMode
             m_etBody.setCustomSelectionActionModeCallback(new android.view.ActionMode.Callback() {
