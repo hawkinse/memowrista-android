@@ -53,9 +53,6 @@ public class PebbleComService extends Service {
     @Override
     public void onCreate(){
         super.onCreate();
-        //handleCommand(intent);
-        Toast.makeText(getApplicationContext(), "WristNote Pebble com service created!", Toast.LENGTH_SHORT).show();
-
 
         dataReciever = new PebbleKit.PebbleDataReceiver(PEBBLE_APP_UUID) {
 
@@ -267,14 +264,6 @@ public class PebbleComService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId){
-
-        if(intent != null) {
-            Toast.makeText(getApplicationContext(), "WristNote Pebble com service started!", Toast.LENGTH_SHORT).show();
-            loadNoteList();
-        } else {
-            Toast.makeText(getApplicationContext(), "WristNote Pebble com service is already running!", Toast.LENGTH_SHORT).show();
-        }
-
         //Update current instance
         pebbleComServiceInstance = this;
 
@@ -286,13 +275,11 @@ public class PebbleComService extends Service {
 
     @Override
     public IBinder onBind(Intent intent) {
-        Toast.makeText(getApplicationContext(), "WristNote Pebble com service is not (yet) bindable!", Toast.LENGTH_SHORT).show();
         return null;
     }
 
     @Override
     public void onDestroy(){
-        Toast.makeText(getApplicationContext(), "WristNote Pebble com service destroyed!", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -301,7 +288,6 @@ public class PebbleComService extends Service {
         if(level > TRIM_MEMORY_UI_HIDDEN) {
             //Free memory by releasing loaded notes
             m_nsNotes = null;
-            Toast.makeText(getApplicationContext(), "WristNote Pebble com service - freeing memory at request of OS", Toast.LENGTH_SHORT).show();
         }
     }
 

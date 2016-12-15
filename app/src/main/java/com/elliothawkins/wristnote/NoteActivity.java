@@ -113,14 +113,13 @@ public class NoteActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_note_delete:
-                //Toast.makeText(this, "Deleting note!", Toast.LENGTH_SHORT).show();
+
                 m_ncf.deleteNote();
                 finish();
                 return true;
 
             //Handle back button, since it for some reason is not handled by parent in default case
             case android.R.id.home:
-                //Toast.makeText(this, "Returning to main activity (or whatever is UP)...", Toast.LENGTH_SHORT).show();
                 m_ncf.writeNote();
                 finish();
                 return true;

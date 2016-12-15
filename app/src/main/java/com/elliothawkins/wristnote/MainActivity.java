@@ -162,7 +162,6 @@ public class MainActivity extends AppCompatActivity implements INoteClickListene
 
     @Override
     public void onRestoreInstanceState(Bundle savedInstanceState) {
-        Toast.makeText(this, "Restoring index state!", Toast.LENGTH_LONG).show();
         super.onRestoreInstanceState(savedInstanceState);
 
         //Restore index from last state
