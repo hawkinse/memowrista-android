@@ -61,7 +61,7 @@ public class NoteListAdapter extends BaseAdapter {
                                     (modifiedDateCal.get(Calendar.AM_PM) == 1 ? "PM" : "AM");
 
         tvNoteTitle.setText(mNotes[position].title.isEmpty() ? mContext.getString(R.string.default_note_title) : mNotes[position].title);
-        //tvNoteTimestamp.setText(modifiedDateString + " ID: " + mNotes[position].ID);
+        tvNoteTimestamp.setText(modifiedDateString/* + " ID: " + mNotes[position].ID*/);
 
         if((m_enableHighlight) && (position == m_highlightedIndex)){
             //Set highlight
